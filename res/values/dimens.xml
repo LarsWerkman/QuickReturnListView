@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="sticky_height">120dp</dimen>
+    <dimen name="page_margin">16dp</dimen>
+</resources>

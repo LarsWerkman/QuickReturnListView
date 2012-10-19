@@ -1,0 +1,7 @@
+<resources>
+    <color name="top_item">#a6c</color>
+    <color name="sticky_item">#fff</color>
+    <color name="sticky_item_text">#09c</color>
+    <color name="bottom_item">#f44</color>
+    <color name="bottom_item_alt">#c00</color>
+</resources>
