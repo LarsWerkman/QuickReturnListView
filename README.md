@@ -2,8 +2,8 @@
 
 This is a implementation of the QuickReturn UI developed by Roman Nurik and Nick Butcher for a listview. 
 
-![image](https://lh5.googleusercontent.com/3eLokQSO85-OljVwdDMzDVyNUie5WWaB0Cp8-urO89EkJDbAmE_AjyZZN2NbIpZ5XsnlB7pwKw4)
-![image](https://lh5.googleusercontent.com/m-IabWdeCWNoGtw10Wr6rTB2p55fQXgyS9U45jh-1KByec8mMKb_zYFN7xyxrQY5X-uaZ9OObHc)
+![image](https://lh3.googleusercontent.com/-irOPY6vGZ_g/UJQYJrscGCI/AAAAAAAAAJM/0lWAyt8l_E0//QuickReturnListView2.png)
+![image](https://lh3.googleusercontent.com/-irOPY6vGZ_g/UJQYJrscGCI/AAAAAAAAAJM/0lWAyt8l_E0//QuickReturnListView2.png)
 
 watch the demo at [here](http://youtu.be/Y5uBpe7T-GE)
 
