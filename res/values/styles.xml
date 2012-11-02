@@ -1,12 +1,12 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:Theme.Light" />
-    
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar" />
+
     <style name="Item">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">300dp</item>
     </style>
-    
+
     <style name="Item.Sticky">
         <item name="android:background">@color/sticky_item</item>
         <item name="android:layout_height">@dimen/sticky_height</item>

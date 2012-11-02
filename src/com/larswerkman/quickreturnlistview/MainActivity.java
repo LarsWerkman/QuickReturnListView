@@ -1,130 +1,86 @@
 package com.larswerkman.quickreturnlistview;
 
-import android.annotation.SuppressLint;
-import android.app.ListActivity;
-import android.os.Build;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.TranslateAnimation;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 
-public class MainActivity extends ListActivity {
 
-	private static final int STATE_ONSCREEN = 0;
-	private static final int STATE_OFFSCREEN = 1;
-	private static final int STATE_RETURNING = 2;
-	private int mMinRawY = 0;
-	private int mState = STATE_ONSCREEN;
-	private int mQuickReturnHeight;
-	private int mCachedVerticalScrollRange;
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+	
+    private ViewPager mPager;
 
-	private TextView mQuickReturnView;
-	private QuickReturnListView mListView;
-	private View mHeader;
-	private View mPlaceHolder;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-	private TranslateAnimation anim;
+        PagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return new DefaultFragment();
+                    case 1:
+                        return new AnimationFragment();
+                }
+                return null;
+            }
 
-	public void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
-		setContentView(R.layout.activity_main);
+            @Override
+            public int getCount() {
+                return 2;
+            }
 
-		String[] array = new String[] { "Android", "Android", "Android",
-				"Android", "Android", "Android", "Android", "Android",
-				"Android", "Android", "Android", "Android", "Android",
-				"Android", "Android", "Android" };
-		mHeader = getLayoutInflater().inflate(R.layout.header, null);
-		mQuickReturnView = (TextView) findViewById(R.id.sticky);
-		mQuickReturnView.setText("test");
-		mListView = (QuickReturnListView) getListView();
-		mListView.addHeaderView(mHeader);
-		mPlaceHolder = findViewById(R.id.placeholder);
-		setListAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_single_choice,
-				android.R.id.text1, array));
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.default_fragment);
+                    case 1:
+                        return getString(R.string.animation_fragment);
+                }
+                return null;
+            }
+        };
 
-		mListView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new ViewTreeObserver.OnGlobalLayoutListener() {
-					@Override
-					public void onGlobalLayout() {
-						mCachedVerticalScrollRange = mListView
-								.computeVerticalScrollRange();
-						mQuickReturnHeight = mQuickReturnView.getHeight();
-					}
-				});
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setAdapter(adapter);
+        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                getActionBar().setSelectedNavigationItem(position);
+            }
+        });
 
-		mListView.setOnScrollListener(new OnScrollListener() {
-			@SuppressLint("NewApi")
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
+        mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.page_margin));
 
-				int rawY = mPlaceHolder.getTop()
-						- Math.min(
-								mCachedVerticalScrollRange
-										- mListView.getHeight(),
-								mListView.computeVerticalScrollOffset());
+        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-				int translationY = 0;
+        for (int position = 0; position < adapter.getCount(); position++) {
+            getActionBar().addTab(getActionBar().newTab()
+                    .setText(adapter.getPageTitle(position))
+                    .setTabListener(this));
+        }
 
-				switch (mState) {
-				case STATE_OFFSCREEN:
-					if (rawY <= mMinRawY) {
-						mMinRawY = rawY;
-					} else {
-						mState = STATE_RETURNING;
-					}
-					translationY = rawY;
-					break;
+        getActionBar().setDisplayShowHomeEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
+    }
 
-				case STATE_ONSCREEN:
-					if (rawY < -mQuickReturnHeight) {
-						mState = STATE_OFFSCREEN;
-						mMinRawY = rawY;
-					}
-					translationY = rawY;
-					break;
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        mPager.setCurrentItem(tab.getPosition());
+    }
 
-				case STATE_RETURNING:
-					translationY = (rawY - mMinRawY) - mQuickReturnHeight;
-					if (translationY > 0) {
-						translationY = 0;
-						mMinRawY = rawY - mQuickReturnHeight;
-					}
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
 
-					if (rawY > 0) {
-						mState = STATE_ONSCREEN;
-						translationY = rawY;
-					}
-
-					if (translationY < -mQuickReturnHeight) {
-						mState = STATE_OFFSCREEN;
-						mMinRawY = rawY;
-					}
-					break;
-				}
-				if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB) {
-					anim = new TranslateAnimation(0, 0, translationY,
-							translationY);
-					anim.setFillAfter(true);
-					anim.setDuration(0);
-					mQuickReturnView.startAnimation(anim);
-				} else {
-					mQuickReturnView.setTranslationY(translationY);
-				}
-
-			}
-
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-	}
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
 }
+
