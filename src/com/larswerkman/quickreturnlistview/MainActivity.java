@@ -26,13 +26,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         return new DefaultFragment();
                     case 1:
                         return new AnimationFragment();
+                    case 2:
+                    	return new BottomFragment();
                 }
                 return null;
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
 
             @Override
@@ -42,6 +44,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         return getString(R.string.default_fragment);
                     case 1:
                         return getString(R.string.animation_fragment);
+                    case 2:
+                    	return getString(R.string.footer_fragment);
                 }
                 return null;
             }
