@@ -178,29 +178,34 @@ public class AnimationFragment extends ListFragment {
 
 				case STATE_EXPANDED:
 					if (rawY < mMinRawY - 2 && !noAnimation) {
-						noAnimation = true;
-						anim = new TranslateAnimation(0, 0, 0,
+						if (rawY < 0) {
+							translationY = rawY;
+							mState = STATE_ONSCREEN;
+						}
+						else {
+							noAnimation = true;
+							anim = new TranslateAnimation(0, 0, 0,
 								-mQuickReturnHeight);
-						anim.setFillAfter(true);
-						anim.setDuration(250);
-						anim.setAnimationListener(new AnimationListener() {
+							anim.setFillAfter(true);
+							anim.setDuration(250);
+							anim.setAnimationListener(new AnimationListener() {
 
-							@Override
-							public void onAnimationStart(Animation animation) {
-							}
+								@Override
+								public void onAnimationStart(Animation animation) {
+								}
 
-							@Override
-							public void onAnimationRepeat(Animation animation) {
+								@Override
+								public void onAnimationRepeat(Animation animation) {
+								}
 
-							}
-
-							@Override
-							public void onAnimationEnd(Animation animation) {
-								noAnimation = false;
-								mState = STATE_OFFSCREEN;
-							}
-						});
-						mQuickReturnView.startAnimation(anim);
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									noAnimation = false;
+									mState = STATE_OFFSCREEN;
+								}
+							});
+							mQuickReturnView.startAnimation(anim);
+						}
 					} else if (translationY > 0) {
 						translationY = 0;
 						mMinRawY = rawY - mQuickReturnHeight;
