@@ -77,15 +77,14 @@ public class DefaultFragment extends ListFragment{
 				R.layout.list_item,
 				R.id.text1, array));
 		
-		mListView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new ViewTreeObserver.OnGlobalLayoutListener() {
-					@Override
-					public void onGlobalLayout() {
-						mQuickReturnHeight = mQuickReturnView.getHeight();
-						mListView.computeScrollY();
-						mCachedVerticalScrollRange = mListView.getListHeight();
-					}
-				});
+		mListView.getViewTreeObserver().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            		@Override
+            		public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                		mQuickReturnHeight = linearInputArea.getHeight();
+                		list.computeScrollY();
+                		mCachedVerticalScrollRange = list.getListHeight();
+        		 }
+		});
 
 		mListView.setOnScrollListener(new OnScrollListener() {
 			@SuppressLint("NewApi")
